@@ -1,7 +1,7 @@
-//4.5 ����ƥ��
+//4.5 括号匹配
 //2025.11.5
-/*�㷨˼·��������ɨ�����ʽ������ջ����������ջ�����������ţ����ջΪ�գ����Ϸ�������ջ��Ԫ�ص�����
-�뵱ǰ�����Ž���ƥ�䣬����ƥ����Ϸ������򲻺Ϸ����������ƣ� ֱ��ɨ����ϣ���ջ����Ϸ������򲻺Ϸ�*/ 
+/*算法思路：从左到右扫描表达式，利用栈，左括号入栈，遇到右括号，如果栈为空，不合法，否则将栈顶元素弹出，
+与当前右括号进行匹配，若能匹配则合法，否则不合法，依次类推， 直至扫描完毕，若栈空且标志为1则合法，否则不合法*/ 
 
 #include<iostream>
 #include<stdlib.h>
@@ -13,27 +13,27 @@ using namespace std;
 
 typedef char  SElemType; 
 
-//����ջ
+//定义栈
 typedef struct{
 	SElemType *base;
 	SElemType *top;
 	int stacksize;
 }SqStack;
 
-//�����ջ
+//构造空栈
 int InitStack(SqStack &S){
 	S.base=new SElemType[MAXSIZE];
 	if(!S.base){
-		cout<<"�����ڴ�ʧ��"<<endl;
+		cout<<"分配内存失败"<<endl;
 		exit(1);
 	}
 	S.top=S.base;
 	S.stacksize=MAXSIZE;
-	cout<<"�ڴ����ɹ�"<<endl;
+	cout<<"内存分配成功"<<endl;
 	return OK;
 } 
 
-//�ж�ջ�Ƿ�Ϊ��
+//判断栈是否为空
 bool StackEmpty(SqStack S){
 	if(S.top==S.base){
 		return true;
@@ -42,20 +42,20 @@ bool StackEmpty(SqStack S){
 	}
 } 
 
-//��ջ
+//入栈
 int Push(SqStack &S,SElemType e){
 	if((S.top-S.base)==S.stacksize){
-		cout<<"ջ����"<<endl; 
+		cout<<"栈满了"<<endl; 
 	}
 	*S.top=e;
 	S.top++;
 	return OK;
 } 
 
-//��ջ
+//出栈
 int Pop(SqStack &S,SElemType &e){
 	if(S.top==S.base){
-		cout<<"ջ����"<<endl;
+		cout<<"栈空了"<<endl;
 		return ERROR;
 	}
 	S.top--;
@@ -63,7 +63,7 @@ int Pop(SqStack &S,SElemType &e){
 	return OK;
 } 
 
-//�ж������Ƿ�ƥ�亯��
+//判断括号是否匹配函数
 int Compare(SElemType e1,SElemType e2){
 	if((e1=='('&&e2==')')||(e1=='['&&e2==']')){
 		return OK;
@@ -75,10 +75,10 @@ int Compare(SElemType e1,SElemType e2){
 int main(){
 	SqStack S;
 	InitStack(S);
-	int n=10;	//��ʼ�������� 
+	int n=10;	//初始数组容量 
 	char ch;
 	char *str=new char[n];
-	cout<<"���������ʽ������@��ʾ��������"<<endl;
+	cout<<"请输入表达式（输入@表示结束）："<<endl;
 	int i=0;
 	while(cin.get(ch)&&ch!='@'){
 		if(i>=n){
@@ -87,14 +87,14 @@ int main(){
 			for(int j=0;j<n;j++){
 				str2[j]=str[j];
 			}
-			delete[] str;		//��ָ��str��ָ����ǿ鶯̬����������ڴ��ͷŵ�
-			str=str2;		//��strָ������ָ��str2ָ����ָ���ڴ���������ָ�븳ֵ���������ַ������ƣ� 
+			delete[] str;		//把指针str所指向的那块动态分配的数组内存释放掉
+			str=str2;		//让str指针现在指向str2指针所指的内存区域（这是指针赋值操作而非字符串复制） 
 		}
 		str[i++]=ch;
 	}
 	SElemType temp;
 	int k;
-	int flag=1;		//��־��Ĭ��ֵΪ1��0��ʾ������ƥ��ʧ�ܵ���� 
+	int flag=1;		//标志，默认值为1，0表示出现了匹配失败的情况 
 	for(int j=0;j<i;j++){
 		if(str[j]=='('||str[j]=='['){
 			Push(S,str[j]);
@@ -102,16 +102,16 @@ int main(){
 			Pop(S,temp);
 			k=Compare(temp,str[j]);
 			if(k==0){
-				cout<<"����ƥ�䲻�Ϸ�"<<endl;
+				cout<<"括号匹配不合法"<<endl;
 				flag=0;
 				break;
 			}
 		}
 	}
 	
-	//������Ϻ����ջΪ�գ���ζ����ջ��ȫ����������flag=1����ζ��ƥ���δʧ�ܣ���������ƥ��Ϸ� 
+	//遍历完毕后，如果栈为空（意味着入栈的全部弹出）且flag=1（意味着匹配从未失败），则括号匹配合法 
 	if(StackEmpty(S)&&flag==1){
-		cout<<"����ƥ��Ϸ�"<<endl;
+		cout<<"括号匹配合法"<<endl;
 	}
 	
 	return 0;
@@ -119,3 +119,4 @@ int main(){
 }
  
  
+
