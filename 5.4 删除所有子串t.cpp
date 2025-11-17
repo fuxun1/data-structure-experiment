@@ -12,29 +12,7 @@ typedef struct{
     int length;
 }SString;
 
-//串的模式匹配算法--BF算法
-//从第pos个字符开始，在主串S中查找子串T并返回其首元素的位置
-int Index_BF(SString S,SString T,int pos){
-    int i=pos,j=1;
-    while(i<=S.length&&j<=T.length){
-        if(S.ch[i]==T.ch[j]){
-            i++;
-            j++;
-        }else if(S.ch[i]!=T.ch[j]){
-            //回溯（关键步骤）
-            i=i-j+2;    //i和j都走了(j-1)步，i先返回起点再+1，从下一个字符开始重新和T匹配，i-(j-1)+1=i-j+2
-            j=1;
-        }
 
-    }
-    //匹配成功的结束条件
-    //因为匹配失败j就会重新从1开始，所以如果j能一直走下去到达T.length+1，则一定匹配成功了
-    if(j>T.length){
-        return (i-T.length);
-    }else{
-        return 0;   //意味着匹配失败
-    }
-}
 
 //删除串S的第pos个字符起长度为len的子串
 int StrDelete(SString &S,int pos,int len){
@@ -100,4 +78,5 @@ int main(){
     return 0;
     
 }
+
 
